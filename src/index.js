@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
 
 const client = new ApolloClient({
-    uri: 'https://graphql.contentful.com/content/v1/spaces/8br1t512f3qs?access_token=2G1Uxog8AmYnfpRfZqjId7qYrpfGtGtPUXbYjITaTI4',
+    uri: 'https://graphql.contentful.com/content/v1/spaces/[space-id]?access_token=[access-token]',
     cache: new InMemoryCache()
 });
 

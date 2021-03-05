@@ -1,52 +1,39 @@
-import {useEffect, useState} from "react";
 import "./App.css";
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import {gql, useQuery} from '@apollo/client';
 
-const client = new ApolloClient({
-    uri: 'https://graphql.contentful.com/content/v1/spaces/[space-id]?access_token=[access-token]',
-    cache: new InMemoryCache()
-});
+
+const TOUT_COLLECTIONS = gql`
+    {
+        toutCollection {
+            items {
+                heading
+                body
+                media {
+                    url
+                }
+                link {
+                    slug
+                }
+            }
+        }
+    }
+`
 
 function App() {
-    const [page, setPage] = useState(null);
 
-    useEffect(() => {
+    const {loading, error, data} = useQuery(TOUT_COLLECTIONS);
 
-        client.query({query: gql`
-                {
-                    toutCollection {
-                        items {
-                            heading
-                            body
-                            media {
-                                url
-                            }
-                            link {
-                                slug
-                            }
-                        }
-                    }
-                }
-        `
-        })
-        .then(({data }) => {
-                     console.log(data)
-                    // rerender the entire component with new data
-                    setPage(data.toutCollection.items[0]);
-                })
-        .catch((err) =>  console.error(err));
-    }, []);
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error :(</p>;
 
-    if (!page) {
-        return "Loading...";
-    }
+    console.log(data)
 
     // render the fetched Contentful data
     return (
         <div className="App">
             <header className="App-header">
-                <img src={page.media.url} className="App-logo" alt="logo"/>
-                <p>{page.heading}</p>
+                <img src={data.toutCollection.items[0].media.url} className="App-logo" alt="logo"/>
+                <p>{data.toutCollection.items[0].heading}</p>
             </header>
         </div>
     );
